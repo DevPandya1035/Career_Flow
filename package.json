@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "server": "tsx server/src/index.ts",
+    "db:seed": "prisma db push && tsx prisma/seed.ts",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
