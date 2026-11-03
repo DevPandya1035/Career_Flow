@@ -22,8 +22,8 @@ P0 → P1 → P2 → P3 → P4 → P5 → P6 → P7 → P8 → P9
 | P4 | Application Tracker | Kanban board, advance demo, offer CTA | 🟢 Complete | Medium |
 | P5 | Eligibility Checker | What-if checker, pass/fail table | 🟢 Complete | Medium |
 | P6 | Preparation Hub | DSA, aptitude, checklist, mock interviews | 🟢 Complete | Large |
-| P7 | Student Profile | Academic form, skill tags, resume manager | ⬜ Pending | Medium |
-| P8 | Polish | Responsive, accessibility, animations | ⬜ Pending | Medium |
+| P7 | Student Profile | Academic form, skill tags, resume manager | 🟢 Complete | Medium |
+| P8 | Polish | Responsive, accessibility, animations | 🟡 In Progress | Medium |
 | P9 | Verification | Full test suite, bundle check, final docs | ⬜ Pending | Small |
 
 ---
@@ -167,16 +167,16 @@ P0 → P1 → P2 → P3 → P4 → P5 → P6 → P7 → P8 → P9
 **Goal:** Editable profile that feeds eligibility engine.
 
 ### Deliverables
-- [ ] `AcademicForm` — all fields with validation
-- [ ] `SkillTags` — tag input + remove
-- [ ] `ResumeManager` — file upload, list, primary, delete
-- [ ] `ProfilePage` — 3-section layout
+- [x] `AcademicForm` — all fields with validation
+- [x] `SkillTags` — tag input + remove
+- [x] `ResumeManager` — file upload, list, primary, delete
+- [x] `ProfilePage` — 3-section layout
 
 ### Phase Completion Criteria
-- Saving profile with CGPA 11 shows validation error
-- Saving valid profile shows success toast
-- After adding a resume, Apply modal shows it as an option
-- Changing branch to ME makes Google (CS/IT only) ineligible on /eligibility
+- [x] Saving profile with CGPA 11 shows validation error
+- [x] Saving valid profile shows success toast
+- [x] After adding a resume, Apply modal shows it as an option
+- [x] Changing branch to ME makes Google (CS/IT only) ineligible on /eligibility
 
 ---
 

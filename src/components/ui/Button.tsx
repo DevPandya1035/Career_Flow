@@ -5,6 +5,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   size?: 'sm' | 'md' | 'lg'
   disabledReason?: string
   isLoading?: boolean
+  leftIcon?: React.ReactNode
+  rightIcon?: React.ReactNode
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -14,6 +16,8 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   disabledReason,
   isLoading,
+  leftIcon,
+  rightIcon,
   className = '',
   ...props
 }) => {
@@ -70,7 +74,9 @@ export const Button: React.FC<ButtonProps> = ({
             />
           </svg>
         )}
+        {!isLoading && leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>}
         {children}
+        {!isLoading && rightIcon && <span className="inline-flex shrink-0">{rightIcon}</span>}
       </button>
 
       {/* Accessible explanation when button is disabled */}
