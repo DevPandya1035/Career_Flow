@@ -4,13 +4,15 @@ import { createStudentSlice, type StudentSlice } from './studentSlice'
 import { createJobsSlice, type JobsSlice, INITIAL_FILTERS } from './jobsSlice'
 import { createApplicationsSlice, type ApplicationsSlice } from './applicationsSlice'
 import { createPrepSlice, type PrepSlice, INITIAL_PREP_PROGRESS } from './prepSlice'
+import { createAdminSlice, type AdminSlice } from './adminSlice'
 import { DEFAULT_STUDENT } from '../data/student'
 import { MOCK_JOBS } from '../data/jobs'
 
 export type StoreState = StudentSlice & 
   JobsSlice & 
   ApplicationsSlice & 
-  PrepSlice & {
+  PrepSlice & 
+  AdminSlice & {
     resetStore?: () => void
   }
 
@@ -21,6 +23,7 @@ export const useStore = create<StoreState>()(
       ...createJobsSlice(set, get, api),
       ...createApplicationsSlice(set, get, api),
       ...createPrepSlice(set, get, api),
+      ...createAdminSlice(set, get, api),
 
       resetStore: () =>
         set({
@@ -30,7 +33,10 @@ export const useStore = create<StoreState>()(
           searchQuery: '',
           filters: INITIAL_FILTERS,
           applications: [],
-          prep: INITIAL_PREP_PROGRESS
+          prep: INITIAL_PREP_PROGRESS,
+          currentRole: 'student',
+          analytics: null,
+          selectedJobIdForReview: null
         })
     }),
     {
@@ -40,7 +46,8 @@ export const useStore = create<StoreState>()(
         student: state.student,
         savedJobIds: state.savedJobIds,
         applications: state.applications,
-        prep: state.prep
+        prep: state.prep,
+        currentRole: state.currentRole
       })
     }
   )
