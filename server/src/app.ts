@@ -4,6 +4,7 @@ import { jobsRouter } from './routes/jobs'
 import { studentRouter } from './routes/student'
 import { applicationsRouter } from './routes/applications'
 import { prepRouter } from './routes/prep'
+import { adminRouter } from './routes/admin'
 
 export const app = express()
 
@@ -20,6 +21,7 @@ app.use('/api/jobs', jobsRouter)
 app.use('/api/student', studentRouter)
 app.use('/api/applications', applicationsRouter)
 app.use('/api/prep', prepRouter)
+app.use('/api/admin', adminRouter)
 
 // Error handling middleware
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
