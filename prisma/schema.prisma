@@ -1,0 +1,124 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  branch           String            // CS, IT, ECE, ME, CE, EE
+  year             Int               @default(4)
+  cgpa             Float
+  tenthPercent     Float
+  twelfthPercent   Float
+  backlogs         Int               @default(0)
+  skills           String            // Stored as JSON string array
+  preferredRoles   String            // JSON string array
+  preferredLocs    String            // JSON string array
+  resumes          Resume[]
+  applications     Application[]
+  dsaTopics        DsaTopic[]
+  aptitudeAttempts AptitudeAttempt[]
+  checklistItems   ResumeChecklist[]
+  mockSlots        MockSlot[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Resume {
+  id           String        @id @default(cuid())
+  studentId    String
+  student      Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  filename     String
+  sizeKB       Int
+  uploadedAt   DateTime      @default(now())
+  isPrimary    Boolean       @default(false)
+  url          String?
+  applications Application[]
+}
+
+model Job {
+  id                 String        @id @default(cuid())
+  company            String
+  companyLogo        String        @default("CF")
+  role               String
+  type               String        // SWE, Analyst, Core, Finance, Consulting
+  ctcLPA             Float
+  deadline           DateTime
+  minCGPA            Float
+  maxBacklogs        Int           @default(0)
+  branches           String        // JSON array: ["CS","IT"]
+  minTenthPercent    Float         @default(60.0)
+  minTwelfthPercent  Float         @default(60.0)
+  requiredSkills     String        // JSON array: ["React","DSA"]
+  description        String
+  rounds             String        // JSON array: ["OA","Tech","HR"]
+  locations          String        // JSON array: ["Bengaluru","Remote"]
+  isActive           Boolean       @default(true)
+  applications       Application[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  resumeId  String
+  resume    Resume   @relation(fields: [resumeId], references: [id])
+  status    String   @default("Applied") // Applied, Shortlisted, Assessment, Interview, Selected, Rejected
+  appliedAt DateTime @default(now())
+  nextStep  String   @default("Application registered. Awaiting initial screening.")
+  feedback  String?
+
+  @@unique([studentId, jobId])
+}
+
+model DsaTopic {
+  id        String  @id @default(cuid())
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  topicName String
+  solved    Int     @default(0)
+  total     Int     @default(20)
+
+  @@unique([studentId, topicName])
+}
+
+model AptitudeAttempt {
+  id             String   @id @default(cuid())
+  studentId      String
+  student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date           DateTime @default(now())
+  score          Int
+  totalQuestions Int
+  topic          String
+}
+
+model ResumeChecklist {
+  id        String  @id @default(cuid())
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  itemKey   String
+  isChecked Boolean @default(false)
+
+  @@unique([studentId, itemKey])
+}
+
+model MockSlot {
+  id          String   @id @default(cuid())
+  interviewer String
+  company     String
+  date        String
+  time        String
+  isBooked    Boolean  @default(false)
+  studentId   String?
+  student     Student? @relation(fields: [studentId], references: [id])
+}
