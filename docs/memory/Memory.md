@@ -125,13 +125,13 @@ Scale: 12, 14, 16, 18, 24, 32px
 
 | Phase | Scope | Status |
 |---|---|---|
-| P0 | Docs, types, mock data, project scaffold | 🟡 In Progress |
-| P1 | App shell (Sidebar, TopBar, routing, Zustand) | ⬜ Pending |
-| P2 | Dashboard module | ⬜ Pending |
-| P3 | Job Opportunities module | ⬜ Pending |
-| P4 | Application Tracker module | ⬜ Pending |
-| P5 | Eligibility Checker module | ⬜ Pending |
-| P6 | Preparation Hub module | ⬜ Pending |
+| P0 | Docs, types, mock data, project scaffold | 🟢 Complete |
+| P1 | App shell (Sidebar, TopBar, routing, Zustand) | 🟢 Complete |
+| P2 | Dashboard module | 🟢 Complete |
+| P3 | Job Opportunities module | 🟢 Complete |
+| P4 | Application Tracker module | 🟢 Complete |
+| P5 | Eligibility Checker module | 🟢 Complete |
+| P6 | Preparation Hub module | 🟡 In Progress |
 | P7 | Student Profile module | ⬜ Pending |
 | P8 | Polish: accessibility, responsive, performance | ⬜ Pending |
 | P9 | Testing: unit + component + a11y | ⬜ Pending |
@@ -153,10 +153,10 @@ Scale: 12, 14, 16, 18, 24, 32px
 
 ## Open Questions
 
-- [ ] Should the Preparation Hub's aptitude quiz be fully interactive or a placeholder?
-- [ ] Should mock interviews show a real calendar widget (e.g., react-big-calendar) or a simple slot list?
-- [ ] Should the Dashboard's recommended jobs strip be driven by branch/role preference matching?
-- [ ] Should there be a "Demo Mode" toggle that resets localStorage to default state?
+- [x] Should the Preparation Hub's aptitude quiz be fully interactive or a placeholder? -> Fully interactive 3-question quiz with instant score and readiness contribution.
+- [x] Should mock interviews show a real calendar widget or a simple slot list? -> Accessible interactive slot booking cards with alumni mentors.
+- [x] Should the Dashboard's recommended jobs strip be driven by branch/role preference matching? -> Driven by `eligibleJobs` filtering.
+- [x] Should there be a "Demo Mode" toggle that resets localStorage to default state? -> Reset action available via store / dev menu.
 
 ---
 

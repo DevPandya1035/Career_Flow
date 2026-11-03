@@ -15,13 +15,13 @@ P0 → P1 → P2 → P3 → P4 → P5 → P6 → P7 → P8 → P9
 
 | Phase | Name | Description | Status | Est. Effort |
 |---|---|---|---|---|
-| P0 | Foundation | Scaffold, types, mock data, eligibility engine | 🟡 In Progress | Small |
-| P1 | App Shell | Sidebar, TopBar, routing, Zustand store, shared UI | ⬜ Pending | Medium |
-| P2 | Dashboard | Readiness ring, deadlines, stage chips | ⬜ Pending | Medium |
-| P3 | Job Opportunities | Card grid, filters, search, apply modal | ⬜ Pending | Large |
-| P4 | Application Tracker | Kanban board, advance demo, offer CTA | ⬜ Pending | Medium |
-| P5 | Eligibility Checker | What-if checker, pass/fail table | ⬜ Pending | Medium |
-| P6 | Preparation Hub | DSA, aptitude, checklist, mock interviews | ⬜ Pending | Large |
+| P0 | Foundation | Scaffold, types, mock data, eligibility engine | 🟢 Complete | Small |
+| P1 | App Shell | Sidebar, TopBar, routing, Zustand store, shared UI | 🟢 Complete | Medium |
+| P2 | Dashboard | Readiness ring, deadlines, stage chips | 🟢 Complete | Medium |
+| P3 | Job Opportunities | Card grid, filters, search, apply modal | 🟢 Complete | Large |
+| P4 | Application Tracker | Kanban board, advance demo, offer CTA | 🟢 Complete | Medium |
+| P5 | Eligibility Checker | What-if checker, pass/fail table | 🟢 Complete | Medium |
+| P6 | Preparation Hub | DSA, aptitude, checklist, mock interviews | 🟢 Complete | Large |
 | P7 | Student Profile | Academic form, skill tags, resume manager | ⬜ Pending | Medium |
 | P8 | Polish | Responsive, accessibility, animations | ⬜ Pending | Medium |
 | P9 | Verification | Full test suite, bundle check, final docs | ⬜ Pending | Small |
