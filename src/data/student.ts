@@ -10,7 +10,7 @@ export const DEFAULT_STUDENT: Student = {
   tenthPercent: 92,
   twelfthPercent: 88,
   backlogs: 0,
-  skills: ['React', 'Python', 'Data Structures', 'SQL', 'Algorithms'],
+  skills: ['React', 'Python', 'Data Structures', 'SQL', 'Algorithms', 'Java'],
   resumes: [
     {
       id: 'resume-1',
