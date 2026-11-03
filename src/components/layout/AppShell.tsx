@@ -2,6 +2,7 @@ import React from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
+import { ToastContainer } from '../ui/ToastContainer'
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -62,6 +63,9 @@ export const AppShell: React.FC = () => {
           })}
         </nav>
       </div>
+
+      {/* Global Accessible Toasts */}
+      <ToastContainer />
     </div>
   )
 }
