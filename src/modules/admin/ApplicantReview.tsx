@@ -1,17 +1,11 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { 
-  Users, 
   CheckCircle2, 
   XCircle, 
   Zap, 
   Filter, 
-  FileText, 
-  Building2, 
-  ChevronRight, 
-  AlertTriangle,
-  Award,
-  Sparkles
+  FileText
 } from 'lucide-react'
 import { useStore } from '../../store'
 import { useToast } from '../../hooks/useToast'
@@ -76,7 +70,6 @@ export const ApplicantReview: React.FC = () => {
   const [selectedJobId, setSelectedJobId] = useState<string>(initialJobId)
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('ALL')
   const [applicants, setApplicants] = useState<ApplicantReviewItem[]>([])
-  const [loading, setLoading] = useState(false)
   const [isShortlisting, setIsShortlisting] = useState(false)
 
   const selectedJob = useMemo(
@@ -87,7 +80,6 @@ export const ApplicantReview: React.FC = () => {
   // Fetch or generate applicants for selected drive
   useEffect(() => {
     if (!selectedJob) return
-    setLoading(true)
 
     let isMounted = true
     api.admin.getApplicants(selectedJob.id)
@@ -99,13 +91,11 @@ export const ApplicantReview: React.FC = () => {
           } else {
             generateLocalApplicants(selectedJob)
           }
-          setLoading(false)
         }
       })
       .catch(() => {
         if (isMounted) {
           generateLocalApplicants(selectedJob)
-          setLoading(false)
         }
       })
 
@@ -168,7 +158,7 @@ export const ApplicantReview: React.FC = () => {
 
   const handleDriveChange = (jobId: string) => {
     setSelectedJobId(jobId)
-    setSearchParams({ jobId })
+    setSearchParams({ jobId }, { replace: true })
   }
 
   // 1-Click Bulk Auto-Shortlist (FR31)
@@ -208,7 +198,7 @@ export const ApplicantReview: React.FC = () => {
       )
 
       toast.success(
-        `Bulk Auto-Shortlist complete! Shortlisted qualifying candidates for ${selectedJob.company}.`
+        `Bulk Auto-Shortlist complete! Shortlisted ${shortlistedCount} qualifying candidate(s) for ${selectedJob.company}.`
       )
     } catch {
       toast.error('Failed to run bulk auto-shortlist.')

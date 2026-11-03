@@ -7,7 +7,6 @@ import {
   Award, 
   PlusCircle, 
   CheckCircle2, 
-  Building2, 
   ArrowRight,
   Sparkles
 } from 'lucide-react'
@@ -20,7 +19,6 @@ export const AdminDashboard: React.FC = () => {
   const jobs = useStore((state) => state.jobs)
   const applications = useStore((state) => state.applications)
   const [analytics, setAnalytics] = useState<PlacementAnalytics | null>(null)
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let isMounted = true
@@ -28,7 +26,6 @@ export const AdminDashboard: React.FC = () => {
       .then((data) => {
         if (isMounted) {
           setAnalytics(data)
-          setLoading(false)
         }
       })
       .catch(() => {
@@ -57,7 +54,6 @@ export const AdminDashboard: React.FC = () => {
               EE: { total: 28, placed: 17, percentage: 61 }
             }
           })
-          setLoading(false)
         }
       })
     return () => {

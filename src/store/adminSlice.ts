@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand'
-import type { UserRole, PlacementAnalytics, ApplicantReviewItem } from '../types'
+import type { UserRole, PlacementAnalytics } from '../types'
 
 export interface AdminSlice {
   currentRole: UserRole

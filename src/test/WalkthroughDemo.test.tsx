@@ -123,5 +123,94 @@ describe('End-to-End HCI Walkthrough Demo (Dev Rahulkumar Pandya & Satyam Singh 
     await userEvent.click(logButton)
 
     expect(useStore.getState().prep.dsa['Arrays'].solved).toBe(initialSolved + 1)
+
+    // ==========================================
+    // STEP 7: TPO ADMIN ROLE SWITCH & DRIVE CREATION
+    // ==========================================
+    const tpoRadio = screen.getByRole('radio', { name: /TPO Admin/i })
+    await userEvent.click(tpoRadio)
+
+    expect(useStore.getState().currentRole).toBe('admin')
+    expect(screen.getByText(/Dr. R. K. Verma/i)).toBeInTheDocument()
+    expect(screen.getByText(/Placement Cell Operations/i)).toBeInTheDocument()
+
+    // Navigate to Drives Management
+    const drivesNav = screen.getByRole('link', { name: /Drives & Criteria/i })
+    await userEvent.click(drivesNav)
+    expect(screen.getByText('Placement Drives & Criteria Management')).toBeInTheDocument()
+
+    // Open Create Drive Modal and publish Salesforce drive
+    const addDriveBtn = screen.getByRole('button', { name: /Add Placement Drive/i })
+    await userEvent.click(addDriveBtn)
+    expect(screen.getByRole('heading', { name: /Create Placement Drive/i })).toBeInTheDocument()
+
+    const companyInput = screen.getByLabelText(/Company Name \*/i)
+    const roleInput = screen.getByLabelText(/Job Role \/ Profile \*/i)
+    await userEvent.clear(companyInput)
+    await userEvent.type(companyInput, 'Salesforce')
+    await userEvent.clear(roleInput)
+    await userEvent.type(roleInput, 'Member of Technical Staff')
+
+    const publishBtn = screen.getByRole('button', { name: /Publish Placement Drive/i })
+    await userEvent.click(publishBtn)
+
+    // Verify Salesforce appears in Drives table
+    expect(screen.getByText('Salesforce')).toBeInTheDocument()
+
+    // ==========================================
+    // STEP 8: STUDENT DISCOVERS & OPTS INTO NEW DRIVE
+    // ==========================================
+    const studentRadio = screen.getByRole('radio', { name: /Student/i })
+    await userEvent.click(studentRadio)
+    expect(useStore.getState().currentRole).toBe('student')
+
+    // Navigate to jobs
+    const studentJobsLinks = screen.getAllByRole('link', { name: /jobs|job opportunities/i })
+    await userEvent.click(studentJobsLinks[0])
+    expect(screen.getByText('Salesforce')).toBeInTheDocument()
+
+    // Apply to Salesforce
+    const sfJob = useStore.getState().jobs.find((j) => j.company === 'Salesforce')!
+    const sfCard = screen.getByTestId(`job-card-${sfJob.id}`)
+    const sfApplyBtn = within(sfCard).getByRole('button', { name: /apply now/i })
+    await userEvent.click(sfApplyBtn)
+
+    const sfConfirm = screen.getByRole('checkbox', { name: /confirm application submission/i })
+    await userEvent.click(sfConfirm)
+    const sfSubmit = screen.getByRole('button', { name: /submit application/i })
+    await userEvent.click(sfSubmit)
+
+    // ==========================================
+    // STEP 9: TPO BULK AUTO-SHORTLISTS CANDIDATES (FR31)
+    // ==========================================
+    await userEvent.click(tpoRadio)
+    const applicantsNav = screen.getByRole('link', { name: /Applicant Review/i })
+    await userEvent.click(applicantsNav)
+    expect(screen.getByText('Applicant Review & Verification')).toBeInTheDocument()
+
+    // Select Salesforce in Drive Selector
+    const driveSelect = screen.getByLabelText(/Select Drive/i)
+    await userEvent.selectOptions(driveSelect, sfJob.id)
+
+    // Run Bulk Auto-Shortlist
+    const bulkShortlistBtn = screen.getByRole('button', { name: /Bulk Auto-Shortlist/i })
+    await userEvent.click(bulkShortlistBtn)
+
+    // Verify candidate transitioned to Shortlisted
+    expect(screen.getAllByText('Shortlisted').length).toBeGreaterThanOrEqual(1)
+
+    // ==========================================
+    // STEP 10: STUDENT VERIFIES STATUS IN PIPELINE TRACKER
+    // ==========================================
+    await userEvent.click(studentRadio)
+    const studentTrackerLinks = screen.getAllByRole('link', { name: /tracker/i })
+    await userEvent.click(studentTrackerLinks[0])
+
+    expect(screen.getByRole('heading', { name: /application pipeline tracker/i })).toBeInTheDocument()
+    expect(screen.getByText('Salesforce')).toBeInTheDocument()
+
+    // Verify in store that Salesforce application is Shortlisted
+    const sfApp = useStore.getState().applications.find((a) => a.jobId === sfJob.id)
+    expect(sfApp?.status).toBe('Shortlisted')
   })
 })

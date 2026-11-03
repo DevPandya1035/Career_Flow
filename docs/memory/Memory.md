@@ -78,12 +78,14 @@ Scale: 12, 14, 16, 18, 24, 32px
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| No backend | localStorage only | HCI course prototype scope; eliminates server complexity |
+| Unified TypeScript Stack | Node.js + Express + Prisma + React | Single language across frontend, backend, and ORM schema |
+| Prisma ORM (SQLite / PostgreSQL) | SQLite for local dev, PostgreSQL for RDS | Zero configuration needed for local run (`prisma/dev.db`), seamless migration to Amazon RDS |
+| Pure Eligibility Engine | `src/lib/eligibility.ts` shared | Same pure evaluation rules executed synchronously on client and backend |
+| 1-Click Bulk Auto-Shortlist | Atomic batch processing | Eliminates manual screening overhead for TPO officers, evaluated against published cutoffs |
 | Zustand over Redux | Zustand | Less boilerplate, built-in persist middleware |
 | Tailwind over CSS modules | Tailwind | Design token discipline, responsive utilities |
 | Vite over CRA | Vite | Faster dev server, smaller production bundle |
 | Named exports only | Named exports | Better tree-shaking, easier refactoring |
-| checkEligibility as pure function | Pure function in `src/lib/eligibility.ts` | Easily unit-tested, no side effects |
 | Readiness score formula | DSA 40% + Aptitude 20% + Checklist 25% + Profile 15% | Weighted to reflect placement importance |
 
 ---
@@ -95,6 +97,7 @@ Scale: 12, 14, 16, 18, 24, 32px
 | Aarav Mehta, 21 | CS | 8.4 | Eligibility at a glance, DSA tracker, readiness score |
 | Meera Nair, 21 | ECE | 7.8 | Branch-aware eligibility, skill gap view |
 | Rohit Sharma, 22 | ME | 6.2 | 12th score eligibility, aptitude prep, status clarity |
+| Dr. R. K. Verma, 52 | TPO Head | — | Publish placement drives, specify criteria cutoffs, bulk auto-shortlist applicants |
 
 **Default mock student:** Aarav Mehta, CS, CGPA 8.4, 10th 92%, 12th 88%, 0 backlogs, skills: React, Python, DSA, SQL
 
@@ -133,19 +136,24 @@ Scale: 12, 14, 16, 18, 24, 32px
 | P7 | Student Profile module | 🟢 Complete |
 | P8 | Polish: accessibility, responsive, performance | 🟢 Complete |
 | P9 | Testing: unit + component + a11y + production build | 🟢 Complete |
+| P10 | Backend Compute & Database (Node.js, Express, Prisma, SQLite/PostgreSQL) | 🟢 Complete |
+| P11 | REST API Endpoints (Jobs, Student, Applications, Prep, TPO Admin) | 🟢 Complete |
+| P12 | TPO Admin Portal (Drive Creator, Applicant Review, 1-Click Bulk Shortlist) | 🟢 Complete |
+| P13 | Full-Stack Verification (106 tests, production build, AWS-ready topology) | 🟢 Complete |
 
 ---
 
 ## Invariants (Must Never Change Without Updating This File)
 
-1. **No backend calls.** The app must work 100% offline.
-2. **checkEligibility is a pure function.** Never read from store inside it.
+1. **Full-stack with offline resilience.** The app connects to the Express REST API and seamlessly falls back to client memory/localStorage when offline.
+2. **checkEligibility is a pure function.** Never read from store or database inside it; takes `(student, job)` and returns `{ isEligible, pass, fail }`.
 3. **Design tokens are the only source for colors.** No hardcoded hex in components.
-4. **All interactive elements are keyboard-accessible.** No exceptions.
+4. **All interactive elements are keyboard-accessible.** No exceptions (WCAG 2.1 AA).
 5. **Modal dialogs trap focus.** ESC always closes.
 6. **Apply is blocked when ineligible.** Button disabled + reason tooltip shown.
 7. **Confirmation checkbox must be ticked** before Apply submits.
-8. **No duplicate applications** to the same job.
+8. **No duplicate applications** to the same job (guarded both client-side and server-side with 409 Conflict).
+9. **Two-sided security & integrity.** TPO Admin can publish drives, modify cutoffs, and bulk auto-shortlist; students cannot self-shortlist.
 
 ---
 

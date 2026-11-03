@@ -1,24 +1,18 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { 
   PlusCircle, 
   Search, 
-  Filter, 
   Users, 
-  Archive, 
-  Calendar, 
-  Briefcase, 
-  CheckCircle,
-  AlertCircle
+  Archive
 } from 'lucide-react'
 import { useStore } from '../../store'
 import { useToast } from '../../hooks/useToast'
 import { api } from '../../lib/api'
 import { CreateDriveModal } from './CreateDriveModal'
-import type { Branch, JobType, Job } from '../../types'
+import type { Branch } from '../../types'
 
 export const DriveManager: React.FC = () => {
-  const navigate = useNavigate()
   const toast = useToast()
   const jobs = useStore((state) => state.jobs)
   const setJobs = useStore.setState
@@ -147,8 +141,6 @@ export const DriveManager: React.FC = () => {
               ) : (
                 filteredJobs.map((job) => {
                   const applicantCount = applications.filter((a) => a.jobId === job.id).length
-                  const deadlineDate = new Date(job.deadline)
-                  const isExpired = deadlineDate.getTime() < Date.now()
 
                   return (
                     <tr key={job.id} className="hover:bg-slate-50/70 transition-colors">
