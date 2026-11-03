@@ -8,13 +8,18 @@
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| v1.0 | 2026-11-03 | CareerFlow Team | Initial release |
+| v1.0 | 2026-11-03 | CareerFlow Team | Initial client-side release |
+| v2.0 | 2026-11-03 | CareerFlow Team | Full-stack release: Node.js Express compute, Prisma relational database, AWS cloud architecture, and TPO Placement Admin portal |
 
 ---
 
 ## 1. Executive Summary
 
-CareerFlow is a **student-facing campus placement portal** delivered as a responsive, single-page web application. It is built entirely in the browser — React 18 + TypeScript + Tailwind CSS + Vite — with no server-side backend; all state persists via `localStorage`. The portal consolidates six previously fragmented activities — tracking eligibility, discovering opportunities, submitting applications, monitoring application status, preparing for assessments, and managing a student profile — into one cohesive, accessible experience.
+CareerFlow is an **enterprise-grade, full-stack campus placement and career management portal** delivered as a responsive web application (React 18 + TypeScript + Tailwind CSS + Vite) powered by a dedicated Node.js/Express compute layer and a Prisma-managed relational database (SQLite locally, Amazon RDS PostgreSQL in production). 
+
+The platform supports two core roles:
+1. **Students (Aarav, Meera, Rohit):** Discover verified company drives, check instant eligibility with zero ambiguity, opt in (apply) with tailored resumes, simulate future academic improvements, and prepare across DSA, aptitude, resume standards, and alumni mocks.
+2. **TPO Admin (Campus Placement Cell):** Publish company placement drives with customized academic criteria (min CGPA, backlogs, branch list, 10th/12th cutoffs), review student applicant rosters, run 1-click **Bulk Auto-Shortlisting** of qualified candidates, advance candidate interview stages, and track real-time placement analytics.
 
 The product targets undergraduate students at campus placement cells who currently juggle spreadsheets, notice boards, WhatsApp groups, and manual eligibility checks. CareerFlow reduces cognitive overhead, eliminates application errors caused by missed eligibility criteria, and gives each student a clear, personalised readiness score so they can focus preparation effort where it matters most.
 
@@ -116,20 +121,37 @@ CareerFlow addresses all four pain points in a single, locally-run web applicati
 | **Primary Needs** | 12th score eligibility display; clear application stage tracking; aptitude preparation resources |
 | **Design Response** | Eligibility Engine surfaces 12th score criteria; five-stage Kanban pipeline in Tracker; Aptitude Score Practice section in Prep Hub |
 
+#### Persona 4 — Dr. R. K. Verma (Head of Training & Placement / TPO Admin)
+
+| Attribute | Detail |
+|-----------|--------|
+| **Role** | Training & Placement Officer (TPO) / Campus Admin |
+| **Experience** | 12+ years managing university placement seasons |
+| **Responsibilities** | Liaising with corporate recruiters, defining hard cutoffs, publishing drives, screening candidate pools, running drives, reporting placement KPIs to leadership |
+| **Frustrations** | Students applying to drives they aren't qualified for; manually shortlisting hundreds of spreadsheet rows; disparate communication channels |
+| **Primary Needs** | Easy drive creation form with strict criteria; instant 1-click bulk auto-shortlisting based on published cutoffs; candidate stage progression controls; placement analytics |
+| **Design Response** | TPO Admin Portal (`/admin`), Drive Manager with criteria builder, Applicant Review Table with Bulk Auto-Shortlist action, real-time Placement Analytics Dashboard |
+
 ### 5.2 Persona-to-Feature Mapping
 
-| Feature | Aarav (CS) | Meera (ECE) | Rohit (ME) |
-|---------|-----------|------------|-----------|
-| Eligibility badge on job cards | ✅ Primary | ✅ Primary | ✅ Primary |
-| Branch-aware eligibility filter | Secondary | ✅ Primary | ✅ Primary |
-| DSA Topic Tracker | ✅ Primary | Secondary | — |
-| Skills Gap View | Secondary | ✅ Primary | — |
-| 12th Score Criteria display | — | Secondary | ✅ Primary |
-| Aptitude Practice | Secondary | Secondary | ✅ Primary |
-| Resume Checklist | Secondary | ✅ Primary | Secondary |
-| Application Stage Tracker | ✅ Primary | ✅ Primary | ✅ Primary |
-| Readiness Score | ✅ Primary | ✅ Primary | ✅ Primary |
-| Mock Interview Booking | ✅ Primary | Secondary | Secondary |
+| Feature | Aarav (CS) | Meera (ECE) | Rohit (ME) | Dr. Verma (TPO Admin) |
+|---------|-----------|------------|-----------|----------------------|
+| Eligibility badge on job cards | ✅ Primary | ✅ Primary | ✅ Primary | — |
+| Branch-aware eligibility filter | Secondary | ✅ Primary | ✅ Primary | — |
+| DSA Topic Tracker | ✅ Primary | Secondary | — | — |
+| Skills Gap View | Secondary | ✅ Primary | — | — |
+| 12th Score Criteria display | — | Secondary | ✅ Primary | — |
+| Aptitude Practice | Secondary | Secondary | ✅ Primary | — |
+| Resume Checklist | Secondary | ✅ Primary | Secondary | — |
+| Application Stage Tracker | ✅ Primary | ✅ Primary | ✅ Primary | — |
+| Readiness Score | ✅ Primary | ✅ Primary | ✅ Primary | — |
+| Mock Interview Booking | ✅ Primary | Secondary | Secondary | — |
+| Create Placement Drive with Cutoffs | — | — | — | ✅ Primary |
+| Applicant Review Roster | — | — | — | ✅ Primary |
+| 1-Click Bulk Auto-Shortlist | — | — | — | ✅ Primary |
+| Stage Progression Control | — | — | — | ✅ Primary |
+| Placement Analytics Dashboard | — | — | — | ✅ Primary |
+| Role Switcher (Student ↔ Admin) | Secondary | Secondary | Secondary | ✅ Primary |
 
 ---
 
@@ -253,8 +275,24 @@ CareerFlow addresses all four pain points in a single, locally-run web applicati
 |----|-------------|--------|----------|
 | FR23 | Allow student to view and edit academic details: name, branch, CGPA, backlogs, 12th percentage | Profile | Must |
 | FR24 | Allow student to add, edit, and remove skill tags from their profile | Profile | Must |
-| FR25 | Allow student to upload a resume (PDF, ≤ 2 MB); store as base64 in localStorage; display filename and upload date; allow deletion | Profile | Must |
+| FR25 | Allow student to upload a resume (PDF, ≤ 2 MB); store with metadata; display filename and upload date; allow deletion | Profile | Must |
 | FR26 | Allow student to set and update job preferences: preferred roles, preferred locations, work type (on-site/hybrid/remote) | Profile | Should |
+
+---
+
+### 7.9 TPO Admin Module (Placement Cell Management)
+
+| ID | Description | Module | Priority |
+|----|-------------|--------|----------|
+| FR27 | Allow TPO Admin to create a new company placement drive with customized eligibility cutoffs (min CGPA, max backlogs, eligible branches, 10th/12th percentages, CTC, deadline, and selection rounds) | Admin | Must |
+| FR28 | Allow TPO Admin to edit drive details, update registration deadlines, and archive/delete inactive drives | Admin | Must |
+| FR29 | Provide an Applicant Review Roster displaying all students who opted into a drive, their academic metrics, attached resume, and current recruitment stage | Admin | Must |
+| FR30 | Allow TPO Admin to update candidate recruitment stages individually (Applied → Shortlisted → Assessment → Interview → Selected / Rejected) | Admin | Must |
+| FR31 | Provide a 1-click **Bulk Auto-Shortlist** action that evaluates all applicants against published criteria using the eligibility engine and transitions all passing students to Shortlisted | Admin | Must |
+| FR32 | Provide a Placement Analytics Dashboard tracking total drives, overall student placement %, branch-wise placement breakdown, and average vs. highest CTC | Admin | Must |
+| FR33 | Provide a TopBar Role Switcher allowing seamless toggling between **Student View** (Aarav Mehta) and **TPO Admin View** (Placement Cell) | Navigation | Must |
+| FR34 | Persist all entities in a relational database schema via Prisma ORM with SQLite for zero-config local run and PostgreSQL for AWS RDS | Backend | Must |
+| FR35 | Provide a RESTful compute API server powered by Node.js and Express with Zod request validation and comprehensive error handling | Backend | Must |
 
 ---
 
@@ -268,9 +306,10 @@ CareerFlow addresses all four pain points in a single, locally-run web applicati
 | NFR4 | Performance | First Contentful Paint on throttled 4G connection (10 Mbps down, 1 Mbps up) | ≤ 1 second |
 | NFR5 | Performance | Total JavaScript bundle size (gzipped) | ≤ 200 KB |
 | NFR6 | Responsiveness | Application must be fully functional and readable at viewport widths from 320 px to 1920 px | All breakpoints |
-| NFR7 | Persistence | All student data (profile, applications, prep progress, bookmarks) must survive browser refresh and tab close via `localStorage` | 100% sessions |
-| NFR8 | Usability | System Usability Scale (SUS) score across all personas | ≥ 68 |
-| NFR9 | Browser Support | Application must function correctly in current stable versions of Chrome, Edge, Firefox, and Safari | Current – 1 version |
+| NFR7 | Backend Latency | REST API response times for queries and stage transitions under normal campus load | ≤ 200 ms p95 |
+| NFR8 | Data Integrity | Relational database constraints and foreign keys enforce cascade deletions and prevent duplicate applications | 100% ACID |
+| NFR9 | Resilience | Frontend includes resilient offline caching layer that falls back seamlessly if the backend is momentarily unreachable | 100% Uptime |
+| NFR10 | Usability | System Usability Scale (SUS) score across all personas | ≥ 68 |
 
 ---
 

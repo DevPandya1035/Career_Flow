@@ -8,23 +8,20 @@
 
 | Version | Date | Author | Summary |
 |---------|------|--------|---------|
-| v1.0 | 2026-11-03 | CareerFlow Engineering | Initial release |
+| v1.0 | 2026-11-03 | CareerFlow Engineering | Initial client-side release |
+| v2.0 | 2026-11-03 | CareerFlow Engineering | Full-stack architecture: Node.js Express compute layer, Prisma relational ORM, PostgreSQL database, and TPO Admin REST API |
 
 ---
 
 ## 1. Overview & Purpose
 
-This Technical Requirements Document (TRD) specifies the engineering architecture, technology choices, module design, state management strategy, data layer, accessibility implementation, performance targets, and testing approach for **CareerFlow v1.0**.
+This Technical Requirements Document (TRD) specifies the full-stack engineering architecture, backend compute layer, relational database schema, state management, accessibility, performance, and AWS deployment topology for **CareerFlow v2.0**.
 
-CareerFlow is a **100% client-side** single-page application (SPA). There is no backend, no REST API, and no database. All student data — academic details, skill tags, uploaded resume, application records, preparation progress — persists exclusively in the browser via the Web Storage API (`localStorage`). The application is deployed as a static bundle of HTML, CSS, and JavaScript assets, making it suitable for hosting on GitHub Pages, Netlify, Vercel, or any CDN.
-
-The primary engineering goals are:
-
-1. **Modularity** — Six self-contained feature modules, each with its own components, store slice, and types.
-2. **Type safety** — Strict TypeScript across the entire codebase; no implicit `any`.
-3. **Accessibility** — WCAG 2.1 AA compliance enforced through component design, ARIA roles, and automated tests.
-4. **Performance** — First Contentful Paint ≤ 1 s on throttled 4G; bundle ≤ 200 KB gzipped.
-5. **Testability** — Pure eligibility engine functions and well-isolated components that are straightforward to unit- and integration-test with Vitest + React Testing Library.
+CareerFlow is an **enterprise-grade, full-stack campus placement and recruitment portal**. It features:
+- **A responsive frontend SPA** (React 18 + TypeScript + Tailwind CSS + Vite).
+- **A high-performance backend compute service** (Node.js + Express + TypeScript + Zod validation).
+- **A robust relational database layer** (Prisma ORM with SQLite for zero-config local development and Amazon RDS PostgreSQL in production).
+- **A two-sided platform** supporting both the Student journey (discover, evaluate eligibility, opt in, prep) and the TPO Admin journey (publish drives, specify hard cutoffs, review applicants, 1-click bulk auto-shortlist, and analyze placement KPIs).
 
 ---
 
@@ -33,18 +30,19 @@ The primary engineering goals are:
 | Layer | Technology | Version | Purpose |
 |-------|-----------|---------|---------|
 | **UI Framework** | React | 18.x | Component tree, hooks, concurrent rendering |
-| **Language** | TypeScript | 5.x | Static typing, strict mode |
-| **Build Tool** | Vite | 5.x | Dev server, HMR, production bundle |
-| **Styling** | Tailwind CSS | 3.x | Utility-first CSS, JIT compiler |
-| **Routing** | React Router | v6 | Client-side routing, nested routes |
-| **State Management** | Zustand | 4.x | Lightweight global store with middleware |
-| **Date Utilities** | date-fns | 3.x | Deadline formatting, date arithmetic |
-| **Icons** | lucide-react | latest | SVG icon components, tree-shakeable |
-| **Testing** | Vitest | 1.x | Unit and integration tests, Vite-native |
-| **Testing** | React Testing Library | 14.x | Component rendering, user-event simulation |
-| **Accessibility Testing** | @axe-core/react | 4.x | Runtime accessibility violation reporting (dev only) |
-| **Linting** | ESLint + eslint-plugin-react + eslint-plugin-jsx-a11y | latest | Code quality, a11y rules |
-| **Formatting** | Prettier | 3.x | Consistent code style |
+| **Language** | TypeScript | 5.x | Static typing, strict mode across frontend & backend |
+| **Build Tool** | Vite | 5.x | Fast HMR dev server, production bundle |
+| **Backend Compute** | Node.js + Express | 20.x / 4.x | REST API server, controllers, routing, middleware |
+| **Database & ORM** | Prisma ORM | 5.x | Relational schema, migrations, type-safe queries |
+| **Local Database** | SQLite | 3.x | Zero-setup, standalone local database (`prisma/dev.db`) |
+| **Production Database** | PostgreSQL (Amazon RDS) | 16.x | ACID-compliant relational cloud persistence |
+| **Request Validation** | Zod | 3.x | Schema validation for API payloads and criteria |
+| **Styling** | Tailwind CSS | 3.x | Utility-first CSS, design token discipline |
+| **Routing** | React Router | v6 | Nested routes, client-side SPA routing |
+| **State Management** | Zustand | 4.x | Frontend store with API synchronization |
+| **Icons & Visuals** | lucide-react & canvas-confetti | latest | Accessible icons and celebratory confetti |
+| **Testing** | Vitest + RTL + Supertest | latest | Unit, component, API integration, and E2E testing |
+| **Cloud Hosting (AWS)** | App Runner / ECS + RDS + S3/CloudFront | AWS | Compute container, relational database, CDN distribution |
 
 ### Design Tokens (Tailwind Config)
 

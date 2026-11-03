@@ -1,38 +1,153 @@
 # CareerFlow — Data Schema
 
-> **Version:** 1.0.0 · **Last updated:** 2026-11-03  
-> **Scope:** All TypeScript type definitions, mock data specifications, localStorage keys, Zustand store interfaces, validation rules, and algorithmic formulas that define the data contract for CareerFlow.
-
----
-
-## Table of Contents
-
-1. [Overview](#1-overview)
-2. [Full TypeScript Type Definitions](#2-full-typescript-type-definitions)
-3. [Mock Jobs Data Spec](#3-mock-jobs-data-spec)
-4. [Default Student Profile](#4-default-student-profile)
-5. [localStorage Keys Table](#5-localstorage-keys-table)
-6. [Zustand Store Slices Schema](#6-zustand-store-slices-schema)
-7. [Validation Rules](#7-validation-rules)
-8. [Eligibility Check Algorithm](#8-eligibility-check-algorithm)
-9. [Readiness Score Formula](#9-readiness-score-formula)
-10. [Data Migration Notes](#10-data-migration-notes)
+> **Version:** 2.0.0 · **Last updated:** 2026-11-03  
+> **Scope:** Relational Prisma Schema, PostgreSQL DDL, TypeScript definitions, seed data specifications, validation rules, and algorithmic formulas defining the data contract for CareerFlow.
 
 ---
 
 ## 1. Overview
 
-CareerFlow has **no backend**. There is no database, no REST API, and no network requests at runtime. The entire data layer is:
+CareerFlow operates a **unified data layer** shared between the React frontend and the Express backend compute layer:
 
-1. **TypeScript type definitions** (`src/types/index.ts`) — the authoritative contract between all modules and the Zustand store. Any data exchanged between components or stored in `localStorage` must conform to these types.
-2. **Mock JSON data** (`src/data/`) — static TypeScript files that seed the store on first load. They are imported at build time; they are not fetched.
-3. **Zustand store** — in-memory state derived from (or extending) the mock data. Persisted automatically to `localStorage` by Zustand's `persist` middleware.
-
-This document is the **single source of truth** for all data structures. Any schema change must update this document first.
+1. **Relational Database Schema (`prisma/schema.prisma`):** The authoritative SQL contract defining tables, relations, cascade deletes, and constraints. Operates on **SQLite** for zero-config local development and **PostgreSQL (Amazon RDS)** in production.
+2. **TypeScript Interfaces (`src/types/index.ts` & `server/src/types/`):** Full-stack type safety ensuring that API payloads, store slices, and UI props adhere to the same domain contracts.
+3. **Database Seed Data (`prisma/seed.ts`):** Pre-populates the database with 10 verified placement companies, Aarav Mehta's student profile, and default prep topics.
+4. **Zustand Store Layer:** Frontend state cache synchronized with the backend REST API via typed client calls (`src/lib/api.ts`).
 
 ---
 
-## 2. Full TypeScript Type Definitions
+## 2. Prisma Database Schema (`prisma/schema.prisma`)
+
+```prisma
+datasource db {
+  provider = "sqlite" // SQLite for local run; PostgreSQL in production via env
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Student {
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  branch           String            // CS, IT, ECE, ME, CE, EE
+  year             Int               @default(4)
+  cgpa             Float
+  tenthPercent     Float
+  twelfthPercent   Float
+  backlogs         Int               @default(0)
+  skills           String            // Stored as JSON string array
+  preferredRoles   String            // JSON string array
+  preferredLocs    String            // JSON string array
+  resumes          Resume[]
+  applications     Application[]
+  dsaTopics        DSATopic[]
+  aptitudeAttempts AptitudeAttempt[]
+  checklistItems   ResumeChecklist[]
+  mockSlots        MockSlot[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Resume {
+  id           String        @id @default(cuid())
+  studentId    String
+  student      Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  filename     String
+  sizeKB       Int
+  uploadedAt   DateTime      @default(now())
+  isPrimary    Boolean       @default(false)
+  url          String?
+  applications Application[]
+}
+
+model Job {
+  id                 String        @id @default(cuid())
+  company            String
+  companyLogo        String        @default("CF")
+  role               String
+  type               String        // SWE, Analyst, Core, Finance, Consulting
+  ctcLPA             Float
+  deadline           DateTime
+  minCGPA            Float
+  maxBacklogs        Int           @default(0)
+  branches           String        // JSON array: ["CS","IT"]
+  minTenthPercent    Float         @default(60.0)
+  minTwelfthPercent  Float         @default(60.0)
+  requiredSkills     String        // JSON array: ["React","DSA"]
+  description        String
+  rounds             String        // JSON array: ["OA","Tech","HR"]
+  locations          String        // JSON array: ["Bengaluru","Remote"]
+  isActive           Boolean       @default(true)
+  applications       Application[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  resumeId  String
+  resume    Resume   @relation(fields: [resumeId], references: [id])
+  status    String   @default("Applied") // Applied, Shortlisted, Assessment, Interview, Selected, Rejected
+  appliedAt DateTime @default(now())
+  nextStep  String   @default("Application received and pending initial review.")
+  feedback  String?
+
+  @@unique([studentId, jobId])
+}
+
+model DSATopic {
+  id        String  @id @default(cuid())
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  topicName String
+  solved    Int     @default(0)
+  total     Int     @default(20)
+
+  @@unique([studentId, topicName])
+}
+
+model AptitudeAttempt {
+  id             String   @id @default(cuid())
+  studentId      String
+  student        Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date           DateTime @default(now())
+  score          Int
+  totalQuestions Int
+  topic          String
+}
+
+model ResumeChecklist {
+  id        String  @id @default(cuid())
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  itemKey   String
+  isChecked Boolean @default(false)
+
+  @@unique([studentId, itemKey])
+}
+
+model MockSlot {
+  id          String   @id @default(cuid())
+  interviewer String
+  company     String
+  date        String
+  time        String
+  isBooked    Boolean  @default(false)
+  studentId   String?
+  student     Student? @relation(fields: [studentId], references: [id])
+}
+```
+
+---
+
+## 3. Full TypeScript Type Definitions
 
 All types live in `src/types/index.ts`.
 

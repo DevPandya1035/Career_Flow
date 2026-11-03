@@ -24,7 +24,11 @@ P0 → P1 → P2 → P3 → P4 → P5 → P6 → P7 → P8 → P9
 | P6 | Preparation Hub | DSA, aptitude, checklist, mock interviews | 🟢 Complete | Large |
 | P7 | Student Profile | Academic form, skill tags, resume manager | 🟢 Complete | Medium |
 | P8 | Polish | Responsive, accessibility, animations | 🟢 Complete | Medium |
-| P9 | Verification | Full test suite, bundle check, final docs | 🟢 Complete | Small |
+| P9 | Client Verification | Full test suite, bundle check, final docs | 🟢 Complete | Small |
+| P10 | Backend Compute & Database | Node.js Express, Prisma ORM, SQLite/PostgreSQL, seed script | 🟡 In Progress | Medium |
+| P11 | REST API Endpoints | Jobs, Student, Applications, Prep, TPO Admin routes | ⬜ Pending | Medium |
+| P12 | TPO Admin Portal | Drive creator with criteria, applicant review, bulk auto-shortlist, role switcher | ⬜ Pending | Large |
+| P13 | Full-Stack Verification | E2E two-sided placement walkthrough, build & cloud ready | ⬜ Pending | Small |
 
 ---
 

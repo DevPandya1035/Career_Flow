@@ -1,55 +1,67 @@
 # CareerFlow — Architecture Document
 
-> **Version:** 1.0.0 · **Last updated:** 2026-11-03  
-> **Scope:** System design, data flow, component hierarchy, build pipeline, and design decisions for the CareerFlow campus placement portal.
-
----
-
-## Table of Contents
-
-1. [System Overview](#1-system-overview)
-2. [Project Structure](#2-project-structure)
-3. [Data Flow Diagram](#3-data-flow-diagram)
-4. [Store Architecture](#4-store-architecture)
-5. [Eligibility Engine](#5-eligibility-engine)
-6. [Routing](#6-routing)
-7. [localStorage Schema](#7-localstorage-schema)
-8. [Component Hierarchy](#8-component-hierarchy)
-9. [Build Pipeline](#9-build-pipeline)
-10. [Design Decisions & Trade-offs](#10-design-decisions--trade-offs)
+> **Version:** 2.0.0 · **Last updated:** 2026-11-03  
+> **Scope:** Full-stack system design, backend compute layer, database architecture, AWS cloud topology, component hierarchy, build pipeline, and design decisions for CareerFlow.
 
 ---
 
 ## 1. System Overview
 
-CareerFlow is a **fully client-side Single Page Application (SPA)**. There is no backend server, no REST API, no GraphQL endpoint, and no network requests at runtime (beyond CDN-served static assets on initial load). Every byte of application state lives in the user's browser.
+CareerFlow is an **enterprise-grade, full-stack campus placement and recruitment portal**. It features:
+- **Client Frontend:** Single Page Application (SPA) built with React 18, TypeScript 5, Vite 5, and Tailwind CSS.
+- **Compute Layer:** Node.js + Express REST API with Zod validation and route controllers for both Student and TPO Admin operations.
+- **Persistence Layer:** Prisma ORM with SQLite for zero-config local development (`prisma/dev.db`) and Amazon RDS PostgreSQL in production.
+- **Two-Sided Portals:** Student Portal (`/`, `/jobs`, `/tracker`, `/eligibility`, `/prep`, `/profile`) and TPO Admin Portal (`/admin`, `/admin/drives`, `/admin/applicants`).
 
 ### Key architectural properties
 
 | Property | Detail |
 |---|---|
-| **Rendering model** | Client-side rendering (CSR) via React 18 |
-| **Data persistence** | `localStorage` via Zustand `persist` middleware |
-| **Network calls at runtime** | None — all data is mock/static |
-| **Authentication** | None — single-user app (student) |
-| **State management** | Zustand 4 with Immer middleware |
-| **Type safety** | TypeScript 5 strict mode throughout |
-| **Styling** | Tailwind CSS 3, no custom CSS except complex animations |
-| **Build tool** | Vite 5 |
-| **Router** | React Router v6 |
+| **Frontend Rendering** | Client-side rendering (CSR) via React 18 + Vite 5 |
+| **Backend Compute** | Node.js 20+ with Express REST API (`server/src/`) |
+| **Database & ORM** | Prisma ORM with SQLite (local) and Amazon RDS PostgreSQL (production) |
+| **Data Persistence** | Relational SQL schema with foreign keys, cascade deletes, and ACID transactions |
+| **Frontend State** | Zustand 4 store with API synchronization and offline fallback |
+| **Cloud Deployment** | AWS App Runner / ECS Fargate (compute) + Amazon RDS (database) + S3 & CloudFront (CDN) |
+| **Type Safety** | End-to-end strict TypeScript across frontend and backend |
+| **Pure Logic** | Shared pure eligibility engine (`src/lib/eligibility.ts`) utilized by both client and server |
 
-### Runtime environment
+### Runtime & Cloud Architecture
 
+```mermaid
+flowchart TD
+    subgraph Client ["Client Layer (Browser)"]
+        StudentApp[Student Portal<br/>Aarav Mehta / CS]
+        AdminApp[TPO Admin Portal<br/>Placement Cell]
+        TopBarSwitch[Role Switcher]
+        TopBarSwitch --> StudentApp
+        TopBarSwitch --> AdminApp
+    end
+
+    subgraph CDN ["AWS Edge"]
+        CF[Amazon CloudFront CDN]
+        S3[Amazon S3 Static Assets]
+        CF --> S3
+    end
+
+    subgraph Compute ["AWS Compute (VPC)"]
+        AppRunner[AWS App Runner / ECS Fargate<br/>Node.js + Express Server]
+        Zod[Zod Validation]
+        Controllers[API Route Controllers]
+        Engine[Pure Eligibility Engine]
+        AppRunner --> Zod --> Controllers --> Engine
+    end
+
+    subgraph Database ["Database Layer"]
+        RDS[(Amazon RDS PostgreSQL)]
+        LocalSQLite[(SQLite - Local Dev)]
+        Controllers -->|Prisma Client| RDS
+        Controllers -.->|Local Dev| LocalSQLite
+    end
+
+    Client -->|HTTPS| CF
+    Client -->|REST API /api/*| AppRunner
 ```
-Browser
-  └── CareerFlow SPA (React 18 + TypeScript)
-        ├── React Router v6    (client-side navigation)
-        ├── Zustand Store      (in-memory state + immer mutations)
-        │     └── persist middleware → localStorage
-        └── Mock Data Layer    (src/data/ — static TS files)
-```
-
-All application logic — eligibility checking, progress calculations, readiness scores — runs as pure TypeScript functions in the browser. There is no server-side computation.
 
 ---
 
@@ -58,6 +70,49 @@ All application logic — eligibility checking, progress calculations, readiness
 ```
 CareerFlow/
 │
+├── prisma/                          # Database Schema & Migrations
+│   ├── schema.prisma                # Relational data models
+│   ├── seed.ts                      # Database seeding script (10 companies + student)
+│   └── dev.db                       # Local SQLite database
+│
+├── server/                          # Backend Compute Layer
+│   ├── src/
+│   │   ├── app.ts                   # Express application setup
+│   │   ├── index.ts                 # Server entrypoint (port 5000)
+│   │   ├── prisma.ts                # PrismaClient singleton
+│   │   └── routes/
+│   │       ├── jobs.ts              # Public jobs catalog endpoints
+│   │       ├── student.ts           # Student profile & resume endpoints
+│   │       ├── applications.ts      # Application opt-in endpoints
+│   │       ├── prep.ts              # DSA, aptitude, checklist, mock endpoints
+│   │       └── admin.ts             # TPO Admin drive creation & bulk auto-shortlist
+│   └── tsconfig.json
+│
+├── src/                             # Frontend SPA Layer
+│   ├── components/
+│   │   ├── layout/                  # AppShell, Sidebar, TopBar (with Role Switcher)
+│   │   └── ui/                      # Shared design-system components
+│   ├── modules/
+│   │   ├── dashboard/               # Placement readiness meter & deadlines
+│   │   ├── jobs/                    # Opportunities catalog & opt-in apply modal
+│   │   ├── tracker/                 # 5-stage recruitment Kanban pipeline
+│   │   ├── eligibility/             # Criteria breakdown & What-If simulator
+│   │   ├── prep/                    # DSA tracker, aptitude quiz, ATS checklist, mocks
+│   │   ├── profile/                 # Academic form, skills tags, resume manager
+│   │   └── admin/                   # TPO Admin Portal
+│   │       ├── AdminDashboard.tsx   # Placement stats & branch breakdowns
+│   │       ├── DriveManager.tsx     # Company drive creator & criteria builder
+│   │       └── ApplicantReview.tsx  # Applicant roster & 1-click bulk auto-shortlist
+│   ├── lib/
+│   │   ├── api.ts                   # Typed backend REST API client
+│   │   └── eligibility.ts           # Pure eligibility calculation engine
+│   ├── store/                       # Zustand state slices & API synchronization
+│   └── types/                       # Shared TypeScript interfaces
+│
+├── docs/                            # 11 Architecture & Specification Documents
+├── dist/                            # Production build bundle
+└── package.json
+```
 ├── docs/                          ← All project documentation
 │   ├── architecture/
 │   │   └── Architecture.md        ← This document

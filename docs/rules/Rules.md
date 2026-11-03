@@ -47,7 +47,22 @@
 | Store slices | `camelCase.ts` suffixed `Slice` | `studentSlice.ts`, `jobsSlice.ts` |
 | Type definitions | `index.ts` in `src/types/` | `src/types/index.ts` |
 | Mock data files | `camelCase.ts` | `jobs.ts`, `student.ts` |
+| Backend routes | `camelCase.ts` | `jobs.ts`, `admin.ts` |
 | Test files | Co-located; same name + `.test.ts(x)` | `eligibility.test.ts`, `JobCard.test.tsx` |
+
+### Backend & API Rules
+
+- **RESTful Endpoints:** Plural nouns for resource collections (`/api/jobs`, `/api/applications`).
+- **Zod Validation:** Every POST, PUT, and PATCH request body must be validated with a Zod schema before hitting database logic. Return `400 Bad Request` with structured error messages if validation fails.
+- **Relational Integrity:** Use Prisma transactions (`prisma.$transaction`) whenever multiple mutations must succeed atomically (e.g. bulk auto-shortlisting or deleting students with cascading resumes).
+- **Standardized Response Envelope:**
+  - Success: `res.json(data)` or `{ success: true, ... }`
+  - Failure: `res.status(code).json({ error: 'Human-readable message', details?: ... })`
+- **Error Codes:**
+  - `400`: Bad Request (invalid criteria, negative CGPA, past deadline)
+  - `404`: Resource Not Found (job ID or application ID not in DB)
+  - `409`: Conflict (attempting to apply to the same job twice)
+  - `500`: Internal Server Error (unhandled exceptions logged with stack trace)
 
 ### Exports
 

@@ -219,8 +219,22 @@ CareerFlow serves three student personas — Aarav (speed-focused power user), M
 |--------|--------|
 | Left | Module title — 24 px bold `#0F172A` |
 | Center (md+) | Global search input — 400 px wide, icon left, placeholder "Search jobs, companies…" |
-| Right | Notification bell icon (24 px) + avatar circle (32 px, `#2563EB` bg, initials) |
-| Mobile | Hamburger (24 px) opens drawer; search icon opens full-width search bar overlay |
+| Right | Notification bell icon (24 px) + **Role Switcher** ("Student" ↔ "TPO Admin") + avatar circle (32 px, `#2563EB` bg, initials) |
+| Mobile | Hamburger (24 px) opens drawer; role switch button in mobile header; search icon opens overlay |
+
+### 3.2.1 Role Switcher Component
+- **Pill toggle:** Two segments `[ Student | TPO Admin ]` or a high-contrast toggle pill in TopBar.
+- **Visuals:** Active segment highlights with solid primary/navy badge; inactive segment is muted slate text.
+- **Feedback:** Switching roles instantly re-routes (`/` for student, `/admin` for TPO Admin) and shows an informational toast alert.
+
+### 3.2.2 TPO Admin Drive Creator Modal
+- **Form Anatomy:** 2-column modal: Company Name, Role, CTC (LPA), Registration Deadline (date picker), Minimum CGPA (0.00-10.00 number input), Maximum Backlogs (integer), Branch Selection Checkboxes (CS, IT, ECE, ME, CE, EE), Minimum 10th% and 12th%, Selection Rounds (tag input).
+- **Validation:** Disallows submit if deadline is in the past, CTC ≤ 0, or CGPA < 0 or > 10. Inline field errors.
+
+### 3.2.3 Applicant Review & Bulk Auto-Shortlist Table
+- **Controls:** Target Company Drive selector dropdown, applicant count pill, and prominent **"Bulk Auto-Shortlist"** button (`variant="primary"`, lightning icon).
+- **Table Columns:** Candidate Name, Branch, CGPA, Backlogs, Eligibility Status Pill, Attached Resume link, Current Stage dropdown.
+- **Bulk Action Modal:** Clicking "Bulk Auto-Shortlist" opens a confirmation dialog showing how many applicants meet 100% of the drive cutoffs, and transitions all passing candidates to `Shortlisted`.
 
 ### 3.3 JobCard
 

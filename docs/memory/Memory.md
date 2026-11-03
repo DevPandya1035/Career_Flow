@@ -8,35 +8,33 @@
 
 ## What This Project Is
 
-**CareerFlow** is a student-facing campus placement and career management portal.
+**CareerFlow** is an enterprise-grade campus placement and career management portal.
 Tagline: *"Your Career. Your Journey. Your Future."*
 
-It is a **fully client-side, responsive web application** (React + TypeScript + Tailwind + Vite) with mock data for ten companies and no backend. All state is persisted in `localStorage` via Zustand middleware.
-
-The design follows ISO 9241-210 Human-Centred Design and applies HCI principles from the course report authored by Dev Rahulkumar Pandya (Roll 43) and Satyam Singh (Roll 36).
-
----
-
-## Core Journey
-
-```
-Discover → Prepare → Apply → Succeed
-```
-
-Each step maps to one or more modules.
+It is a **full-stack application** featuring:
+- **Frontend SPA:** React 18 + TypeScript + Tailwind CSS + Vite + Zustand.
+- **Backend Compute:** Node.js + Express REST API server with Zod validation.
+- **Database & Persistence:** Prisma ORM with SQLite for zero-config local development (`prisma/dev.db`) and PostgreSQL (Amazon RDS) for production.
+- **Two-Sided Portals:**
+  - **Student Portal:** Discover verified jobs, check algorithmic eligibility, opt in (apply) with tailored resumes, simulate future improvements, and prepare across DSA, aptitude, and mocks.
+  - **TPO Admin Portal:** Campus placement officers publish company placement drives with customized cutoffs, review student applicants, perform 1-click **Bulk Auto-Shortlisting**, advance interview stages, and view placement analytics.
+- **AWS Cloud Architecture:** AWS App Runner / ECS Fargate container for compute + Amazon RDS for PostgreSQL + S3 & CloudFront for static assets.
 
 ---
 
-## Six Modules
+## Portals & Modules
 
-| Module | Route | Purpose |
-|---|---|---|
-| Dashboard | `/` | Readiness score, deadlines, stage counts, recommended jobs |
-| Job Opportunities | `/jobs` | Search, filter, sort, eligibility badge, apply flow |
-| Application Tracker | `/tracker` | Five-stage pipeline with demo advance |
-| Eligibility Checker | `/eligibility` | What-if CGPA/skills vs. company criteria |
-| Preparation Hub | `/prep` | DSA tracker, aptitude, resume checklist, mock interviews |
-| Student Profile | `/profile` | Academic details, skills, resumes, preferences |
+| Portal | Module | Route | Purpose |
+|---|---|---|---|
+| Student | Dashboard | `/` | Readiness score, deadlines, stage counts, recommended jobs |
+| Student | Job Opportunities | `/jobs` | Search, filter, sort, eligibility badge, apply/opt-in flow |
+| Student | Application Tracker | `/tracker` | Five-stage pipeline with demo advance & offer acceptance |
+| Student | Eligibility Checker | `/eligibility` | What-if CGPA/skills vs. company criteria simulator |
+| Student | Preparation Hub | `/prep` | DSA tracker, aptitude, resume checklist, mock interviews |
+| Student | Student Profile | `/profile` | Academic details, skills, resumes, preferences |
+| Admin | Admin Dashboard | `/admin` | Placement analytics, branch placement stats, avg CTC |
+| Admin | Drive Manager | `/admin/drives` | Create & publish company drives with custom eligibility cutoffs |
+| Admin | Applicant Review | `/admin/applicants` | Review candidate rosters, bulk auto-shortlist, stage progression |
 
 ---
 

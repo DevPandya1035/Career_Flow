@@ -30,8 +30,10 @@ CareerFlow is a **single-page React application** with no backend — all state 
 | Recover from ineligibility | Flow 3: Eligibility Recovery | Jobs → Checker → Profile → Jobs |
 | Improve placement readiness | Flow 4: Preparation | Dashboard → Prep Hub |
 | Monitor application progress | Flow 5: Track Application | Tracker |
+| Publish placement drive | Flow 6: TPO Drive Creation | Admin → Drive Manager |
+| Review applicants & shortlist | Flow 7: Applicant Review & Bulk Shortlist | Admin → Applicant Review |
 
-All five flows share the **Sidebar** (desktop) or **Bottom Nav** (mobile) as the persistent navigation spine. The **TopBar** global search provides a secondary entry point into Flow 1.
+All flows share the **Sidebar** (desktop) or **Bottom Nav** (mobile) as the persistent navigation spine, with the **TopBar** featuring the **Role Switcher** (Student ↔ TPO Admin) and global search.
 
 ---
 
