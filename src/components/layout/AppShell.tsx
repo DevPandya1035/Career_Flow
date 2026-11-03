@@ -50,8 +50,9 @@ export const AppShell: React.FC = () => {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
+                aria-label={item.name}
                 className={({ isActive }) =>
-                  `flex flex-col items-center justify-center py-1 px-2 text-[10px] font-medium transition-colors ${
+                  `flex flex-col items-center justify-center min-w-[48px] min-h-[48px] py-1 px-2 text-[10px] font-medium transition-colors ${
                     isActive ? 'text-primary font-bold' : 'text-slate-500 hover:text-slate-800'
                   }`
                 }
