@@ -6,16 +6,19 @@ export interface EligibilityPillProps {
   isEligible: boolean
   className?: string
   showIcon?: boolean
+  size?: 'sm' | 'md'
 }
 
 export const EligibilityPill: React.FC<EligibilityPillProps> = ({
   isEligible,
   className = '',
-  showIcon = true
+  showIcon = true,
+  size = 'md'
 }) => {
   return (
     <Badge
       variant={isEligible ? 'eligible' : 'ineligible'}
+      size={size}
       className={className}
     >
       {showIcon && (

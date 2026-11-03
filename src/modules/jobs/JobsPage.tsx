@@ -21,7 +21,6 @@ export const JobsPage: React.FC = () => {
   const updateFilters = useStore((state) => state.updateFilters)
   const resetFilters = useStore((state) => state.resetFilters)
   const searchQuery = useStore((state) => state.searchQuery)
-  const setSearchQuery = useStore((state) => state.setSearchQuery)
 
   const { success, error } = useToast()
   const [selectedJobForApply, setSelectedJobForApply] = useState<Job | null>(null)

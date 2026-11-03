@@ -1,5 +1,5 @@
 import React from 'react'
-import { Filter, RotateCcw, Check, Bookmark, CheckCircle2 } from 'lucide-react'
+import { Filter, RotateCcw, Bookmark, CheckCircle2 } from 'lucide-react'
 import type { JobType, Branch } from '../../types'
 import type { JobFilters as FiltersType } from '../../store/jobsSlice'
 import { Button } from '../../components/ui/Button'

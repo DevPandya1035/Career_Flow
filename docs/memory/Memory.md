@@ -131,10 +131,10 @@ Scale: 12, 14, 16, 18, 24, 32px
 | P3 | Job Opportunities module | 🟢 Complete |
 | P4 | Application Tracker module | 🟢 Complete |
 | P5 | Eligibility Checker module | 🟢 Complete |
-| P6 | Preparation Hub module | 🟡 In Progress |
-| P7 | Student Profile module | ⬜ Pending |
-| P8 | Polish: accessibility, responsive, performance | ⬜ Pending |
-| P9 | Testing: unit + component + a11y | ⬜ Pending |
+| P6 | Preparation Hub module | 🟢 Complete |
+| P7 | Student Profile module | 🟢 Complete |
+| P8 | Polish: accessibility, responsive, performance | 🟢 Complete |
+| P9 | Testing: unit + component + a11y + production build | 🟢 Complete |
 
 ---
 

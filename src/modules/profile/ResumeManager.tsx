@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { FileText, Upload, Trash2, CheckCircle2, Star, AlertCircle } from 'lucide-react'
+import { FileText, Upload, Trash2, Star } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import { useStore } from '../../store'
 import { Button } from '../../components/ui/Button'

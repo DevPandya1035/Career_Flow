@@ -1,5 +1,4 @@
 import React from 'react'
-import { UserCheck } from 'lucide-react'
 import { AcademicForm } from './AcademicForm'
 import { SkillTags } from './SkillTags'
 import { ResumeManager } from './ResumeManager'

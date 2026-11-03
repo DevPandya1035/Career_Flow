@@ -48,6 +48,7 @@ export const JobCard: React.FC<JobCardProps> = ({
 
   return (
     <article
+      data-testid={`job-card-${job.id}`}
       aria-labelledby={`job-title-${job.id}`}
       className="bg-white rounded-xl border border-surface-border shadow-xs hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
     >

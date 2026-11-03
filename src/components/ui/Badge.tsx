@@ -12,6 +12,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
     | 'interview'
     | 'selected'
     | 'warning'
+    | 'teal'
   size?: 'sm' | 'md'
 }
 
@@ -38,7 +39,8 @@ export const Badge: React.FC<BadgeProps> = ({
     assessment: 'bg-purple-50 text-purple-700 border border-purple-200',
     interview: 'bg-indigo-50 text-indigo-700 border border-indigo-200',
     selected: 'bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold',
-    warning: 'bg-[#FFF3D6] text-[#8A5A00] border border-[#8A5A00]/25'
+    warning: 'bg-[#FFF3D6] text-[#8A5A00] border border-[#8A5A00]/25',
+    teal: 'bg-[#E2F4EF] text-[#0B7662] border border-[#0B7662]/20 font-semibold'
   }[variant]
 
   return (

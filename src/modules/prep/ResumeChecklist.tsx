@@ -1,5 +1,5 @@
 import React from 'react'
-import { FileCheck, CheckCircle2, AlertCircle } from 'lucide-react'
+import { FileCheck, CheckCircle2 } from 'lucide-react'
 import { useStore } from '../../store'
 import { ProgressBar } from '../../components/ui/ProgressBar'
 
