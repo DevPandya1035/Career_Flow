@@ -118,3 +118,48 @@ export interface PrepProgress {
   checklist: Record<string, boolean>
   mockInterviews: MockInterviewSlot[]
 }
+
+export type UserRole = 'student' | 'admin'
+
+export interface ApplicantReviewItem {
+  id: string
+  applicationId: string
+  studentId: string
+  student: Student
+  resume?: Resume | null
+  status: ApplicationStatus
+  appliedAt: string
+  nextStep: string
+  isEligible: boolean
+  passedCriteria: number
+  failedCriteria: number
+  failedReasons: string[]
+}
+
+export interface PlacementAnalytics {
+  totalDrives: number
+  totalApplications: number
+  totalOffers: number
+  placementRate: number
+  averageCTC: number
+  highestCTC: number
+  branchStats: Record<string, { total: number; placed: number; percentage: number }>
+}
+
+export interface CreateDriveInput {
+  company: string
+  companyLogo?: string
+  role: string
+  type: JobType
+  ctcLPA: number
+  deadline: string
+  minCGPA: number
+  maxBacklogs: number
+  branches: Branch[]
+  minTenthPercent: number
+  minTwelfthPercent: number
+  requiredSkills: string[]
+  description: string
+  rounds: string[]
+  locations: string[]
+}
