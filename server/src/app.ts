@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import { jobsRouter } from './routes/jobs'
 import { studentRouter } from './routes/student'
+import { applicationsRouter } from './routes/applications'
+import { prepRouter } from './routes/prep'
 
 export const app = express()
 
@@ -16,6 +18,8 @@ app.get('/api/health', (_req, res) => {
 // Routes
 app.use('/api/jobs', jobsRouter)
 app.use('/api/student', studentRouter)
+app.use('/api/applications', applicationsRouter)
+app.use('/api/prep', prepRouter)
 
 // Error handling middleware
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
