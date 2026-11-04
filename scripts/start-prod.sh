@@ -3,6 +3,13 @@ set -e
 
 echo "🚀 CareerFlow Production Entrypoint starting..."
 
+# Auto-configure Prisma provider if connecting to PostgreSQL
+if echo "$DATABASE_URL" | grep -q "^postgres"; then
+  echo "🐘 PostgreSQL database detected, updating Prisma schema provider..."
+  sed -i 's/provider = "sqlite"/provider = "postgresql"/' prisma/schema.prisma
+  npx prisma generate
+fi
+
 # Ensure database schema is synchronized
 echo "📦 Running Prisma db push..."
 npx prisma db push --skip-generate || echo "⚠️ Warning: Prisma db push encountered an issue, proceeding..."
