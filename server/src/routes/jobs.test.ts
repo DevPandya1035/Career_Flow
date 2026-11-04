@@ -28,3 +28,4 @@ describe('Jobs REST API', () => {
     expect(res.body.error).toMatch(/not found/i)
   })
 })
+

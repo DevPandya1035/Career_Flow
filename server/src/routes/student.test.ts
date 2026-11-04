@@ -44,3 +44,4 @@ describe('Student Profile REST API', () => {
     expect(delRes.status).toBe(200)
   })
 })
+

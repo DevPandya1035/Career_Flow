@@ -47,3 +47,4 @@ describe('Applications REST API', () => {
     expect(dupRes.body.error).toMatch(/already applied/i)
   })
 })
+

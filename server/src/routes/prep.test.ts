@@ -31,3 +31,4 @@ describe('Preparation Hub REST API', () => {
     expect(cancelRes.body.isBooked).toBe(false)
   })
 })
+
