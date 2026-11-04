@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # CareerFlow Full-Stack App
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=production
+      - PORT=5001
+      - DATABASE_URL=postgresql://careerflow_user:careerflow_secret@postgres:5432/careerflow?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Local PostgreSQL (Mirrors Amazon RDS PostgreSQL)
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: careerflow_user
+      POSTGRES_PASSWORD: careerflow_secret
+      POSTGRES_DB: careerflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U careerflow_user -d careerflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
