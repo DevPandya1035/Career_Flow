@@ -57,9 +57,10 @@ COPY --from=builder /app/server ./server
 COPY --from=builder /app/src/lib ./src/lib
 COPY --from=builder /app/src/data ./src/data
 COPY --from=builder /app/src/types ./src/types
+COPY --from=builder /app/scripts/start-prod.sh ./scripts/start-prod.sh
 
 # Set permissions for non-root user
-RUN chown -R appuser:appgroup /app
+RUN chmod +x ./scripts/start-prod.sh && chown -R appuser:appgroup /app
 USER appuser
 
 EXPOSE 5001
@@ -67,5 +68,6 @@ EXPOSE 5001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:5001/api/health || exit 1
 
-# Start the unified backend server
-CMD ["npx", "tsx", "server/src/index.ts"]
+# Start the unified backend server via entrypoint script
+CMD ["./scripts/start-prod.sh"]
+

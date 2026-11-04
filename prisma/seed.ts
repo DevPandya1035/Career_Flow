@@ -7,7 +7,15 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Seeding CareerFlow database...')
 
-  // Clear existing records
+  const existingJobs = await prisma.job.count()
+  const force = process.env.FORCE_SEED === 'true' || process.argv.includes('--force')
+
+  if (existingJobs > 0 && !force) {
+    console.log(`Database already initialized (${existingJobs} jobs present). Skipping seed.`)
+    return
+  }
+
+  // Clear existing records when seeding
   await prisma.application.deleteMany()
   await prisma.resume.deleteMany()
   await prisma.dsaTopic.deleteMany()
